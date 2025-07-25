@@ -1,14 +1,10 @@
-#include "webbind/AudioNode.h"
-#include "webbind/AudioScheduledSourceNode.h"
-#include "webbind/BaseAudioContext.h"
-#include "webbind/OscillatorNode.h"
 #include <jsbind/jsbind.h>
 #include <webbind/webbind.h>
 
-jb_Any button_cb(jb_Array args, jb_Any *data) {
+jb_Any button_cb(const jb_Array *args, const jb_Any *data) {
     jb_Object params = jb_Object_from_val(data);
-    jb_Any ctx = jb_Object_get(params, "context");
-    jb_Any os = jb_Object_get(params, "os");
+    jb_Any ctx = jb_Object_get(&params, "context");
+    jb_Any os = jb_Object_get(&params, "os");
     AudioDestinationNode dest = BaseAudioContext_destination(&ctx);
     AudioNode_connect0(&os, &dest);
     AudioScheduledSourceNode_start1(&os, 0.0);
@@ -38,8 +34,8 @@ int main() {
     Node_appendChild(&body, &button);
 
     jb_Object params = jb_Object_new();
-    jb_Object_set(params, "context", *(jb_Any *)&context);
-    jb_Object_set(params, "os", *(jb_Any *)&oscillator);
+    jb_Object_set(&params, "context", &context);
+    jb_Object_set(&params, "os", &oscillator);
 
     jb_Function btn_cb = jb_Function_from(button_cb, &params);
 
